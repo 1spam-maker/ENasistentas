@@ -1,13 +1,10 @@
-
-import { GoogleGenAI, Type, GenerateContentResponse } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { ProficiencyLevel, LessonType, LessonContent } from "../types";
 
-const API_KEY = process.env.API_KEY || "";
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
 export const generateLesson = async (level: ProficiencyLevel, type: LessonType, topic: string): Promise<LessonContent> => {
-  const prompt = `Sukurk anglų kalbos pamoką ${level} lygiui tema: "${topic}". Pamokos tipas: ${type}.
-  Paaiškinimai turi būti lietuvių kalba.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const prompt = `Sukurk anglų kalbos pamoką ${level} lygiui tema: "${topic}". Pamokos tipas: ${type}. 
+  Paaiškinimai turi būti lietuvių kalba. 
   Pateik:
   1. Pavadinimą.
   2. Išsamų gramatikos ar temos paaiškinimą lietuviškai.
@@ -70,12 +67,14 @@ export const generateLesson = async (level: ProficiencyLevel, type: LessonType, 
   return JSON.parse(response.text);
 };
 
-export const getAiTutorResponse = async (message: string, history: {role: string, parts: {text: string}[]}[]) => {
+export const getAiTutorResponse = async (message: string, history: any[] = []) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const chat = ai.chats.create({
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-3-pro-preview',
     config: {
-      systemInstruction: 'Tu esi LinguoMaster - draugiškas ir kantrus anglų kalbos mokytojas. Vartotojas kalba lietuviškai. Tavo tikslas - padėti jam mokytis anglų kalbos, aiškinti gramatiką, taisyti klaidas ir skatinti kalbėti angliškai. Atsakinėk lietuviškai, bet pateik daug pavyzdžių angliškai. Jei vartotojas daro klaidų, švelniai pataisyk.',
-    }
+      systemInstruction: 'Tu esi LinguoMaster - draugiškas ir kantrus anglų kalbos mokytojas. Vartotojas kalba lietuviškai. Tavo tikslas - padėti jam mokytis anglų kalbos, aiškinti gramatiką, taisyti klaidas ir skatinti kalbėti angliškai. Atsakinėk lietuviškai, bet pateik daug pavyzdžių angliškai. Jei vartotojas daro klaidų, švelniai pataisyk. Būk drąsus ir motyvuojantis.',
+    },
+    history: history
   });
 
   const response = await chat.sendMessage({ message });
