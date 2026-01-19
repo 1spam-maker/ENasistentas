@@ -1,0 +1,8 @@
+
+{
+  "name": "Anglų kalbos asistentas",
+  "description": "Išsami anglų kalbos mokymosi platforma: nuo pagrindų iki aukščiausio lygio su AI mokytoju, interaktyviomis pamokomis ir gramatikos pratimais.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
